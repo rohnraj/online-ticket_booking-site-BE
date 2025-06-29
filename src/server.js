@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import {ACTION} from './constatn.js'
+import {ACTION} from './constatn.js';
+import pool from './config/db.js';
 
 const app = express();
 dotenv.config()
