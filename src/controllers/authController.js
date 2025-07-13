@@ -2,8 +2,7 @@ import { getUserDataByEmail, createNewUser } from "../models/authModel.js";
 
 export const getRegisteredController = async (req, res, next) => {
   try {
-    console.log("runnng");
-    const { username, password, email, phoneNumber, gender, role } = req.body;
+    const { username, password, email, phoneNumber, gender, role } = req.body || {};
     if (!username || !password || !email || !phoneNumber || !gender) {
       return res
         .status(400)
