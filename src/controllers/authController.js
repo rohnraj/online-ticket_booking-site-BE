@@ -1,21 +1,44 @@
-
-import {getUserDataByEmail, createNewUser} from '../models/authModel.js'
+import { getUserDataByEmail, createNewUser } from "../models/authModel.js";
 
 export const getRegisteredController = async (req, res, next) => {
-    try{
-        console.log('runnng')
-        const {username, password, email, phoneNumber, gender, role} = req.body()
-        if(!username, !password, !email, !phoneNumber, !gender) res.status(400).json({success: false, message: "Data not send properly"})
-            
-        if(role.toLowerCase() === 'admin')  res.status(400).json({success:false, message: "Admin role cannot be created via a API"})
-        const userAlreadyRegistered = await getUserDataByEmail(email)
-        if(userAlreadyRegistered) res.status(409).json({success:false, message: "email already registered"})
+  try {
+    console.log("runnng");
+    const { username, password, email, phoneNumber, gender, role } = req.body;
+    if (!username || !password || !email || !phoneNumber || !gender) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Data not sent properly" });
+    }
 
-        const NewUser = await createNewUser(username, password, email, phoneNumber, gender, role);
-        if(NewUser) res.status(200).json({success: true, message: "Accout register successfully in DB"})
+    if (role && role.toLowerCase() === "admin") {
+      return res.status(400).json({
+        success: false,
+        message: "Admin role cannot be created via API",
+      });
     }
-    catch(error){
-        console.error(error);
-        res.status(500).json({ success: false, message: "Server error" });
+    const userAlreadyRegistered = await getUserDataByEmail(email);
+    if (userAlreadyRegistered) {
+      return res
+        .status(409)
+        .json({ success: false, message: "Email already registered" });
     }
-}
+
+    const NewUser = await createNewUser(
+      username,
+      password,
+      email,
+      phoneNumber,
+      gender,
+      role
+    );
+    if (NewUser) {
+      return res.status(200).json({
+        success: true,
+        message: "Account registered successfully in DB",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
